@@ -17,6 +17,7 @@ import { Feather, Octicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import Loading from "../components/loading";
 import CustomKeyBoardView from "../components/CustomKeyBoardView";
+import { useAuth } from "../context/authContext";
 
 export default function SignUp() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function SignUp() {
   const usernameRef = useRef();
   const profileRef = useRef();
   const [isLoading, setIsLoading] = useState(false);
+  const {register}  = useAuth();
 
   const handleRegister = async () => {
     if (
@@ -37,14 +39,19 @@ export default function SignUp() {
       return;
     }
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 5000);
+    console.log(emailRef.current+" "+passwordRef.current+" "+usernameRef.current+" "+profileRef.current);
+
+    let response = await register(emailRef.current,passwordRef.current,usernameRef.current,profileRef.current);
+    setIsLoading(false);
+    console.log('got result', response);
+    if(!response.success){
+      Alert.alert('Sign Up', response.msg);
+    }
   };
 
   return (
    <CustomKeyBoardView>
-      <StatusBar style="dark-content" />
+      <StatusBar backgroundColor='white' style="dark-content" />
       <View
         className="flex-1 gap-8"
         style={{ paddingTop: hp(3), paddingHorizontal: wp(5) }}
@@ -76,21 +83,7 @@ export default function SignUp() {
           >
             <Feather name="user" size={hp(2.7)} color="gray" />
             <TextInput
-              onChange={(value) => (emailRef.current = value)}
-              style={{ fontSize: hp(2) }}
-              className="flex-1 font-semibold text-neutral-700"
-              placeholder="Email Adress"
-              placeholderTextColor={"gray"}
-            />
-          </View>
-
-          <View
-            style={{ height: hp(7) }}
-            className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
-          >
-            <Octicons name="mail" size={hp(2.7)} color="gray" />
-            <TextInput
-              onChange={(value) => (usernameRef.current = value)}
+              onChangeText={(value) => (usernameRef.current = value)}
               style={{ fontSize: hp(2) }}
               className="flex-1 font-semibold text-neutral-700"
               placeholder="Username"
@@ -102,9 +95,23 @@ export default function SignUp() {
             style={{ height: hp(7) }}
             className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
           >
+            <Octicons name="mail" size={hp(2.7)} color="gray" />
+            <TextInput
+              onChangeText={(value) => (emailRef.current = value)}
+              style={{ fontSize: hp(2) }}
+              className="flex-1 font-semibold text-neutral-700"
+              placeholder="Email Adress"
+              placeholderTextColor={"gray"}
+            />
+          </View>
+
+          <View
+            style={{ height: hp(7) }}
+            className="flex-row gap-4 px-4 bg-neutral-100 items-center rounded-xl"
+          >
             <Octicons name="lock" size={hp(2.7)} color="gray" />
             <TextInput
-              onChange={(value) => (passwordRef.current = value)}
+              onChangeText={(value) => (passwordRef.current = value)}
               style={{ fontSize: hp(2) }}
               className="flex-1 font-semibold text-neutral-700"
               placeholder="Password"
@@ -119,7 +126,7 @@ export default function SignUp() {
           >
             <Feather name="image" size={hp(2.7)} color="gray" />
             <TextInput
-              onChange={(value) => (profileRef.current = value)}
+              onChangeText={(value) => (profileRef.current = value)}
               style={{ fontSize: hp(2) }}
               className="flex-1 font-semibold text-neutral-700"
               placeholder="Profile url"

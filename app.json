@@ -3,6 +3,7 @@
     "name": "e-Tafa",
     "slug": "e-Tafa",
     "version": "1.0.0",
+    "permissions": ["android.permission.INTERNET"],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",

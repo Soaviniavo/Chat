@@ -1,16 +1,18 @@
 import React,  {useEffect} from 'react'; 
-import {View} from 'react-native'
-import {Slot,Stack,useRouter, useSegments} from 'expo-router'
+import {Slot,useRouter, useSegments} from 'expo-router'
 import { AuthContextprovider, useAuth } from "../context/authContext";
 import "../global.css"
+import { MenuProvider } from 'react-native-popup-menu'
 
 const MainLayout = () => {
     const {isAuthenticated} = useAuth();
     const segment = useSegments();
     const router = useRouter();
     useEffect(() => {
+        fetch("https://www.google.com")
+        .then(() => console.log("✅ Connexion active"))
+        .catch(() => console.log("❌ Pas de connexion"));
         if(typeof isAuthenticated == 'undefined') return ; 
-        console.log(segment[0]);
         const inApp = segment[0] == '(app)'
 
         if(isAuthenticated && !inApp){
@@ -27,9 +29,12 @@ const MainLayout = () => {
 
 export default function RootLayout(){
     return (
-        <AuthContextprovider>
-            <MainLayout/>
-        </AuthContextprovider>
+        <MenuProvider>
+            <AuthContextprovider>
+                <MainLayout/>
+            </AuthContextprovider>
+        </MenuProvider>
+        
         
     )
 }

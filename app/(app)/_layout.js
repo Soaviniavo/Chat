@@ -1,8 +1,19 @@
-import { Stack , Slot } from "expo-router";
-import { Text, View } from "react-native";
+import { Stack  } from "expo-router";
+import HomeHeader from "../../components/HomeHeader";
+import React from "react";
+
 
 export default function _layout() {
   return (
-    <Stack/>
+    <Stack>
+      <Stack.Screen
+            name="home"
+            options={{
+              header : () => {
+                return <HomeHeader/>
+              }
+            }}
+      />
+    </Stack>
   );
 }

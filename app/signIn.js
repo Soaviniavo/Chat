@@ -8,6 +8,7 @@ import { Octicons } from "@expo/vector-icons";
 import {useRouter} from 'expo-router'; 
 import Loading from "../components/loading.js" ; 
 import CustomKeyBoardView from "../components/CustomKeyBoardView.js";
+import { useAuth } from "../context/authContext.js";
 
 
 export default function SignIn() {
@@ -15,21 +16,26 @@ export default function SignIn() {
   const emailRef = useRef();
   const passwordRef = useRef(); 
   const [isLoading,setIsLoading] = useState(false);
+  const {login} = useAuth(); 
 
   const handleLogin = async () => {
     if(!emailRef.current || !passwordRef.current){
       Alert.alert('Sign In','Please fill all the fields !');
       return ;
     }
+
     setIsLoading(true);
-    setTimeout(() => {  
-        setIsLoading(false);
-    },5000)
+    console.log(emailRef.current + " "+ passwordRef.current);
+    const response = await login(emailRef.current,passwordRef.current);
+    setIsLoading(false);
+    if(!response.success){
+      Alert.alert('Sign In', response.msg);
+    }
   }
 
   return (
     <CustomKeyBoardView>
-      <StatusBar style="dark-content" />
+      <StatusBar backgroundColor='white' style="dark-content" />
       <View
         className="flex-1 gap-8"
         style={{ paddingTop: hp(3), paddingHorizontal: wp(5) }}
@@ -60,7 +66,7 @@ export default function SignIn() {
           >
             <Octicons name="mail" size={hp(2.7)} color="gray" />
             <TextInput
-              onChange={value => emailRef.current = value}
+              onChangeText={value => emailRef.current = value}
               style={{ fontSize: hp(2) }}
               className="flex-1 font-semibold text-neutral-700"
               placeholder="Email Adress"
@@ -74,7 +80,7 @@ export default function SignIn() {
             >
               <Octicons name="lock" size={hp(2.7)} color="gray" />
               <TextInput
-                onChange={value => passwordRef.current = value}
+                onChangeText={value => passwordRef.current = value}
                 style={{ fontSize: hp(2) }}
                 className="flex-1 font-semibold text-neutral-700"
                 placeholder="Password"
